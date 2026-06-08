@@ -29,7 +29,7 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,san
 .auth-fg{margin-bottom:14px}
 .auth-fg label{font-size:12px;color:var(--text2);display:block;margin-bottom:5px;font-weight:500}
 /* APP */
-#appScreen{display:none;width:100vw;height:100vh;overflow:hidden}
+#appScreen{display:none;width:100vw;height:100vh}
 .app{display:flex;width:100vw;height:100vh;overflow:hidden}
 .sidebar{width:220px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;z-index:100;transition:left .3s}
 .sidebar-logo{padding:20px 16px 14px;font-size:16px;font-weight:700;color:var(--text);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
@@ -144,6 +144,92 @@ label{font-size:12px;color:var(--text2);display:block;margin-bottom:5px;font-wei
 <div id="globalLoader"><div class="loader-spin"></div></div>
 
 <!-- ============ AUTH ============ -->
+<div class="modal-bg" id="modalTx">
+  <div class="modal">
+    <div class="modal-title"><i class="ti ti-arrows-exchange" style="color:var(--accent)"></i>Nova Transação</div>
+    <div class="form-grid" style="grid-template-columns:repeat(2,1fr)">
+      <div class="form-group"><label>Tipo</label><select id="txTipo"><option>Receita</option><option>Despesa</option><option>Investimento</option><option>Transferência</option></select></div>
+      <div class="form-group"><label>Valor (R$)</label><input id="txValor" type="number" placeholder="0,00" min="0" step="0.01"></div>
+      <div class="form-group" style="grid-column:1/-1"><label>Descrição</label><input id="txDesc" placeholder="Ex: Salário, Aluguel, Supermercado..."></div>
+      <div class="form-group"><label>Categoria</label><select id="txCat"><option>Moradia</option><option>Alimentação</option><option>Transporte</option><option>Saúde</option><option>Educação</option><option>Lazer</option><option>Salário</option><option>Freelance</option><option>Investimento</option><option>Outros</option></select></div>
+      <div class="form-group"><label>Data</label><input id="txData" type="date"></div>
+      <div class="form-group"><label>Conta</label><select id="txConta"><option>Conta Principal</option><option>Conta Poupança</option><option>Investimentos</option><option>Reserva</option></select></div>
+      <div class="form-group" style="grid-column:1/-1"><label>Observação (opcional)</label><input id="txObs" placeholder="Detalhe adicional..."></div>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:20px;justify-content:flex-end">
+      <button class="btn" onclick="closeModal('modalTx')">Cancelar</button>
+      <button class="btn btn-primary" onclick="addTransaction()"><i class="ti ti-check"></i> Salvar</button>
+    </div>
+  </div>
+</div>
+<div class="modal-bg" id="modalGoal">
+  <div class="modal">
+    <div class="modal-title"><i class="ti ti-target" style="color:var(--accent)"></i>Nova Meta Financeira</div>
+    <div class="form-grid" style="grid-template-columns:repeat(2,1fr)">
+      <div class="form-group" style="grid-column:1/-1"><label>Nome</label><input id="goalName" placeholder="Ex: Reserva de emergência, Carro..."></div>
+      <div class="form-group"><label>Valor Alvo (R$)</label><input id="goalTarget" type="number" placeholder="50000" min="0"></div>
+      <div class="form-group"><label>Valor Atual (R$)</label><input id="goalCurrent" type="number" placeholder="0" min="0"></div>
+      <div class="form-group"><label>Prazo</label><input id="goalDate" type="date"></div>
+      <div class="form-group"><label>Categoria</label><select id="goalCat"><option>Reserva</option><option>Veículo</option><option>Imóvel</option><option>Viagem</option><option>Aposentadoria</option><option>Educação</option><option>Outro</option></select></div>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:20px;justify-content:flex-end">
+      <button class="btn" onclick="closeModal('modalGoal')">Cancelar</button>
+      <button class="btn btn-primary" onclick="addGoal()"><i class="ti ti-check"></i> Criar Meta</button>
+    </div>
+  </div>
+</div>
+<div class="modal-bg" id="modalProj">
+  <div class="modal">
+    <div class="modal-title"><i class="ti ti-briefcase" style="color:var(--accent)"></i>Novo Projeto</div>
+    <div class="form-grid" style="grid-template-columns:repeat(2,1fr)">
+      <div class="form-group" style="grid-column:1/-1"><label>Nome</label><input id="projName" placeholder="Ex: Concurso, Negócio, Imóvel..."></div>
+      <div class="form-group" style="grid-column:1/-1"><label>Descrição</label><input id="projDesc" placeholder="Breve descrição"></div>
+      <div class="form-group"><label>Orçamento (R$)</label><input id="projOrc" type="number" placeholder="0" min="0"></div>
+      <div class="form-group"><label>Status</label><select id="projStatus"><option>Planejando</option><option>Em andamento</option><option>Ativo</option><option>Pausado</option><option>Concluído</option></select></div>
+      <div class="form-group"><label>Início</label><input id="projInicio" type="date"></div>
+      <div class="form-group"><label>Fim Previsto</label><input id="projFim" type="date"></div>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:20px;justify-content:flex-end">
+      <button class="btn" onclick="closeModal('modalProj')">Cancelar</button>
+      <button class="btn btn-primary" onclick="addProject()"><i class="ti ti-check"></i> Criar Projeto</button>
+    </div>
+  </div>
+</div>
+<div class="modal-bg" id="modalInv">
+  <div class="modal">
+    <div class="modal-title"><i class="ti ti-trending-up" style="color:var(--accent)"></i>Novo Ativo</div>
+    <div class="form-grid" style="grid-template-columns:repeat(2,1fr)">
+      <div class="form-group" style="grid-column:1/-1"><label>Nome do Ativo</label><input id="invNome" placeholder="Ex: Tesouro SELIC 2029, PETR4, Bitcoin..."></div>
+      <div class="form-group"><label>Classe</label><select id="invClasse"><option>Renda Fixa</option><option>Ações</option><option>FIIs</option><option>Cripto</option><option>Internacional</option><option>Outros</option></select></div>
+      <div class="form-group"><label>Valor Investido (R$)</label><input id="invInvestido" type="number" placeholder="0" min="0"></div>
+      <div class="form-group"><label>Valor Atual (R$)</label><input id="invAtual" type="number" placeholder="0" min="0"></div>
+      <div class="form-group"><label>Dividendos Recebidos (R$)</label><input id="invDiv" type="number" placeholder="0" min="0"></div>
+      <div class="form-group"><label>Data de Compra</label><input id="invData" type="date"></div>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:20px;justify-content:flex-end">
+      <button class="btn" onclick="closeModal('modalInv')">Cancelar</button>
+      <button class="btn btn-primary" onclick="addInvestment()"><i class="ti ti-check"></i> Adicionar</button>
+    </div>
+  </div>
+</div>
+<div class="modal-bg" id="modalDebt">
+  <div class="modal">
+    <div class="modal-title"><i class="ti ti-credit-card" style="color:var(--red)"></i>Nova Dívida</div>
+    <div class="form-grid" style="grid-template-columns:repeat(2,1fr)">
+      <div class="form-group" style="grid-column:1/-1"><label>Nome</label><input id="debtNome" placeholder="Ex: Financiamento Veículo, Cartão..."></div>
+      <div class="form-group"><label>Tipo</label><select id="debtTipo"><option>Financiamento</option><option>Cartão de Crédito</option><option>Empréstimo</option><option>Outros</option></select></div>
+      <div class="form-group"><label>Saldo Devedor (R$)</label><input id="debtSaldo" type="number" placeholder="0" min="0"></div>
+      <div class="form-group"><label>Parcela Mensal (R$)</label><input id="debtParcela" type="number" placeholder="0" min="0"></div>
+      <div class="form-group"><label>Taxa (%/mês)</label><input id="debtTaxa" type="number" placeholder="1.8" step="0.1" min="0"></div>
+      <div class="form-group"><label>Parcelas Restantes</label><input id="debtParc" type="number" placeholder="12" min="1"></div>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:20px;justify-content:flex-end">
+      <button class="btn" onclick="closeModal('modalDebt')">Cancelar</button>
+      <button class="btn btn-primary" onclick="addDebt()"><i class="ti ti-check"></i> Adicionar</button>
+    </div>
+  </div>
+</div>
+
 <div id="authScreen">
   <div class="auth-box">
     <div class="auth-logo"><i class="ti ti-chart-donut-4" style="color:var(--accent);font-size:20px;margin-right:6px"></i>Profit<span>First</span></div>
@@ -164,95 +250,10 @@ label{font-size:12px;color:var(--text2);display:block;margin-bottom:5px;font-wei
 <div class="overlay" id="overlay" onclick="closeSidebar()"></div>
 
 <!-- MODALS -->
-<div class="modal-bg" id="modalTx">
-  <div class="modal">
-    <div class="modal-title"><i class="ti ti-arrows-exchange" style="color:var(--accent)"></i>Nova Transação</div>
-    <div class="form-grid" style="grid-template-columns:repeat(2,1fr)">
-      <div class="form-group"><label>Tipo</label><select id="txTipo"><option>Receita</option><option>Despesa</option><option>Investimento</option><option>Transferência</option></select></div>
-      <div class="form-group"><label>Valor (R$)</label><input id="txValor" type="number" placeholder="0,00" min="0" step="0.01"></div>
-      <div class="form-group" style="grid-column:1/-1"><label>Descrição</label><input id="txDesc" placeholder="Ex: Salário, Aluguel, Supermercado..."></div>
-      <div class="form-group"><label>Categoria</label><select id="txCat"><option>Moradia</option><option>Alimentação</option><option>Transporte</option><option>Saúde</option><option>Educação</option><option>Lazer</option><option>Salário</option><option>Freelance</option><option>Investimento</option><option>Outros</option></select></div>
-      <div class="form-group"><label>Data</label><input id="txData" type="date"></div>
-      <div class="form-group"><label>Conta</label><select id="txConta"><option>Conta Principal</option><option>Conta Poupança</option><option>Investimentos</option><option>Reserva</option></select></div>
-      <div class="form-group" style="grid-column:1/-1"><label>Observação (opcional)</label><input id="txObs" placeholder="Detalhe adicional..."></div>
-    </div>
-    <div style="display:flex;gap:10px;margin-top:20px;justify-content:flex-end">
-      <button class="btn" onclick="closeModal('modalTx')">Cancelar</button>
-      <button class="btn btn-primary" onclick="addTransaction()"><i class="ti ti-check"></i> Salvar</button>
-    </div>
-  </div>
-</div>
 
-<div class="modal-bg" id="modalGoal">
-  <div class="modal">
-    <div class="modal-title"><i class="ti ti-target" style="color:var(--accent)"></i>Nova Meta Financeira</div>
-    <div class="form-grid" style="grid-template-columns:repeat(2,1fr)">
-      <div class="form-group" style="grid-column:1/-1"><label>Nome</label><input id="goalName" placeholder="Ex: Reserva de emergência, Carro..."></div>
-      <div class="form-group"><label>Valor Alvo (R$)</label><input id="goalTarget" type="number" placeholder="50000" min="0"></div>
-      <div class="form-group"><label>Valor Atual (R$)</label><input id="goalCurrent" type="number" placeholder="0" min="0"></div>
-      <div class="form-group"><label>Prazo</label><input id="goalDate" type="date"></div>
-      <div class="form-group"><label>Categoria</label><select id="goalCat"><option>Reserva</option><option>Veículo</option><option>Imóvel</option><option>Viagem</option><option>Aposentadoria</option><option>Educação</option><option>Outro</option></select></div>
-    </div>
-    <div style="display:flex;gap:10px;margin-top:20px;justify-content:flex-end">
-      <button class="btn" onclick="closeModal('modalGoal')">Cancelar</button>
-      <button class="btn btn-primary" onclick="addGoal()"><i class="ti ti-check"></i> Criar Meta</button>
-    </div>
-  </div>
-</div>
 
-<div class="modal-bg" id="modalProj">
-  <div class="modal">
-    <div class="modal-title"><i class="ti ti-briefcase" style="color:var(--accent)"></i>Novo Projeto</div>
-    <div class="form-grid" style="grid-template-columns:repeat(2,1fr)">
-      <div class="form-group" style="grid-column:1/-1"><label>Nome</label><input id="projName" placeholder="Ex: Concurso, Negócio, Imóvel..."></div>
-      <div class="form-group" style="grid-column:1/-1"><label>Descrição</label><input id="projDesc" placeholder="Breve descrição"></div>
-      <div class="form-group"><label>Orçamento (R$)</label><input id="projOrc" type="number" placeholder="0" min="0"></div>
-      <div class="form-group"><label>Status</label><select id="projStatus"><option>Planejando</option><option>Em andamento</option><option>Ativo</option><option>Pausado</option><option>Concluído</option></select></div>
-      <div class="form-group"><label>Início</label><input id="projInicio" type="date"></div>
-      <div class="form-group"><label>Fim Previsto</label><input id="projFim" type="date"></div>
-    </div>
-    <div style="display:flex;gap:10px;margin-top:20px;justify-content:flex-end">
-      <button class="btn" onclick="closeModal('modalProj')">Cancelar</button>
-      <button class="btn btn-primary" onclick="addProject()"><i class="ti ti-check"></i> Criar Projeto</button>
-    </div>
-  </div>
-</div>
 
-<div class="modal-bg" id="modalInv">
-  <div class="modal">
-    <div class="modal-title"><i class="ti ti-trending-up" style="color:var(--accent)"></i>Novo Ativo</div>
-    <div class="form-grid" style="grid-template-columns:repeat(2,1fr)">
-      <div class="form-group" style="grid-column:1/-1"><label>Nome do Ativo</label><input id="invNome" placeholder="Ex: Tesouro SELIC 2029, PETR4, Bitcoin..."></div>
-      <div class="form-group"><label>Classe</label><select id="invClasse"><option>Renda Fixa</option><option>Ações</option><option>FIIs</option><option>Cripto</option><option>Internacional</option><option>Outros</option></select></div>
-      <div class="form-group"><label>Valor Investido (R$)</label><input id="invInvestido" type="number" placeholder="0" min="0"></div>
-      <div class="form-group"><label>Valor Atual (R$)</label><input id="invAtual" type="number" placeholder="0" min="0"></div>
-      <div class="form-group"><label>Dividendos Recebidos (R$)</label><input id="invDiv" type="number" placeholder="0" min="0"></div>
-      <div class="form-group"><label>Data de Compra</label><input id="invData" type="date"></div>
-    </div>
-    <div style="display:flex;gap:10px;margin-top:20px;justify-content:flex-end">
-      <button class="btn" onclick="closeModal('modalInv')">Cancelar</button>
-      <button class="btn btn-primary" onclick="addInvestment()"><i class="ti ti-check"></i> Adicionar</button>
-    </div>
-  </div>
-</div>
 
-<div class="modal-bg" id="modalDebt">
-  <div class="modal">
-    <div class="modal-title"><i class="ti ti-credit-card" style="color:var(--red)"></i>Nova Dívida</div>
-    <div class="form-grid" style="grid-template-columns:repeat(2,1fr)">
-      <div class="form-group" style="grid-column:1/-1"><label>Nome</label><input id="debtNome" placeholder="Ex: Financiamento Veículo, Cartão..."></div>
-      <div class="form-group"><label>Tipo</label><select id="debtTipo"><option>Financiamento</option><option>Cartão de Crédito</option><option>Empréstimo</option><option>Outros</option></select></div>
-      <div class="form-group"><label>Saldo Devedor (R$)</label><input id="debtSaldo" type="number" placeholder="0" min="0"></div>
-      <div class="form-group"><label>Parcela Mensal (R$)</label><input id="debtParcela" type="number" placeholder="0" min="0"></div>
-      <div class="form-group"><label>Taxa (%/mês)</label><input id="debtTaxa" type="number" placeholder="1.8" step="0.1" min="0"></div>
-      <div class="form-group"><label>Parcelas Restantes</label><input id="debtParc" type="number" placeholder="12" min="1"></div>
-    </div>
-    <div style="display:flex;gap:10px;margin-top:20px;justify-content:flex-end">
-      <button class="btn" onclick="closeModal('modalDebt')">Cancelar</button>
-      <button class="btn btn-primary" onclick="addDebt()"><i class="ti ti-check"></i> Adicionar</button>
-    </div>
-  </div>
-</div>
 
 <div class="app">
 <div class="sidebar" id="sidebar">
@@ -270,6 +271,7 @@ label{font-size:12px;color:var(--text2);display:block;margin-bottom:5px;font-wei
     <div class="nav-item" data-page="debts"><i class="ti ti-credit-card"></i>Dívidas</div>
     <div class="nav-item" data-page="kpi"><i class="ti ti-gauge"></i>Indicadores</div>
     <div class="nav-item" data-page="reports"><i class="ti ti-file-analytics"></i>Relatórios</div>
+    <div class="nav-item" data-page="forecast"><i class="ti ti-calendar-stats"></i>Previsão</div>
     <div class="nav-item" data-page="simulator"><i class="ti ti-calculator"></i>Simuladores</div>
   </nav>
   <div class="sidebar-bottom">
@@ -412,6 +414,64 @@ label{font-size:12px;color:var(--text2);display:block;margin-bottom:5px;font-wei
       </div>
     </div>
 
+
+    <!-- PREVISÃO FINANCEIRA -->
+    <div class="page" id="page-forecast">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+        <div>
+          <span class="card-title-lg">Previsão Financeira</span>
+          <div style="font-size:12px;color:var(--text2);margin-top:2px">Projeção de gastos e dívidas para os próximos meses</div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <select id="forecastMonths" onchange="renderForecast()" style="width:140px;padding:6px 10px;font-size:12px">
+            <option value="3">Próximos 3 meses</option>
+            <option value="6" selected>Próximos 6 meses</option>
+            <option value="12">Próximos 12 meses</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- KPI Cards -->
+      <div class="grid g4" style="margin-bottom:16px">
+        <div class="card card-sm"><div class="card-title">Total Dívidas Futuras</div><div class="card-value" id="fc-total-debts" style="color:var(--red)">R$0</div><div class="card-sub" id="fc-total-debts-sub"></div></div>
+        <div class="card card-sm"><div class="card-title">Parcelas/mês</div><div class="card-value" id="fc-monthly-debt" style="color:var(--amber)">R$0</div><div class="card-sub">Compromisso fixo mensal</div></div>
+        <div class="card card-sm"><div class="card-title">Renda Livre Estimada</div><div class="card-value" id="fc-free-income" style="color:var(--green)">R$0</div><div class="card-sub" id="fc-free-sub"></div></div>
+        <div class="card card-sm"><div class="card-title">Próxima Quitação</div><div class="card-value" id="fc-next-quit" style="font-size:16px">—</div><div class="card-sub" id="fc-next-quit-name"></div></div>
+      </div>
+
+      <!-- Gráfico de fluxo previsto -->
+      <div class="card" style="margin-bottom:16px">
+        <div class="card-header"><span class="card-title-lg">Fluxo de Caixa Previsto</span><span class="badge badge-gray" id="fc-period-label">6 meses</span></div>
+        <div style="position:relative;height:240px"><canvas id="chartForecast"></canvas></div>
+      </div>
+
+      <!-- Tabela mensal detalhada -->
+      <div class="card" style="margin-bottom:16px">
+        <div class="card-header"><span class="card-title-lg">Detalhamento Mensal</span></div>
+        <div style="overflow-x:auto">
+          <table>
+            <thead><tr><th>Mês</th><th>Receita Est.</th><th>Parcelas Dívidas</th><th>Despesas (média tx.)</th><th>Total Saídas</th><th>Saldo Previsto</th><th>Dívida Restante</th></tr></thead>
+            <tbody id="forecastTable"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Breakdown de despesas por categoria -->
+      <div class="card" style="margin-bottom:16px">
+        <div class="card-header"><span class="card-title-lg">Média de Despesas por Categoria <span style="font-size:12px;color:var(--text3)">(baseado nas suas transações)</span></span><span class="badge badge-amber" id="fc-cat-source">Últimos 3 meses</span></div>
+        <div id="fcCatBreakdown">
+          <div class="empty-state"><i class="ti ti-chart-bar"></i><p>Adicione despesas nas Transações para ver o detalhamento.</p></div>
+        </div>
+      </div>
+
+      <!-- Linha do tempo das dívidas -->
+      <div class="card">
+        <div class="card-header"><span class="card-title-lg">Linha do Tempo das Dívidas <i class="ti ti-timeline" style="font-size:14px;color:var(--accent2)"></i></span></div>
+        <div id="debtTimeline" style="padding:8px 0"></div>
+        <div id="debtTimelineEmpty" class="empty-state"><i class="ti ti-credit-card"></i><p>Nenhuma dívida cadastrada. Adicione dívidas para ver a previsão.</p></div>
+      </div>
+    </div>
+
     <!-- SIMULADORES -->
     <div class="page" id="page-simulator">
       <div class="grid g2" style="margin-bottom:16px">
@@ -432,7 +492,7 @@ label{font-size:12px;color:var(--text2);display:block;margin-bottom:5px;font-wei
     <div class="mob-btn" onclick="goTo('transactions',this)"><i class="ti ti-arrows-exchange"></i>Transações</div>
     <div class="mob-btn" onclick="goTo('profit',this)"><i class="ti ti-building-bank"></i>Profit</div>
     <div class="mob-btn" onclick="goTo('investments',this)"><i class="ti ti-trending-up"></i>Invest.</div>
-    <div class="mob-btn" onclick="goTo('kpi',this)"><i class="ti ti-gauge"></i>Score</div>
+    <div class="mob-btn" onclick="goTo('forecast',this)"><i class="ti ti-calendar-stats"></i>Previsão</div>
   </div>
 </nav>
 </div><!-- appScreen -->
@@ -596,6 +656,7 @@ function renderPage(p){
   else if(p==='debts')renderDebts();
   else if(p==='kpi')renderKPI();
   else if(p==='reports')renderReports();
+  else if(p==='forecast')renderForecast();
   else if(p==='simulator'){calcSim();calcFI();}
 }
 document.querySelectorAll('.nav-item[data-page]').forEach(el=>el.addEventListener('click',()=>goTo(el.dataset.page)));
@@ -891,7 +952,8 @@ async function addDebt(){
   if(!nome){showToast('Informe o nome','warn');return;}
   setLoading(true);
   try{
-    const d={nome,tipo:document.getElementById('debtTipo').value,saldo:parseFloat(document.getElementById('debtSaldo').value)||0,parcela:parseFloat(document.getElementById('debtParcela').value)||0,taxa:parseFloat(document.getElementById('debtTaxa').value)||0,parcelas:parseInt(document.getElementById('debtParc').value)||0};
+    const parcelasNum = parseInt(document.getElementById('debtParc').value)||0;
+    const d={nome,tipo:document.getElementById('debtTipo').value,saldo:parseFloat(document.getElementById('debtSaldo').value)||0,parcela:parseFloat(document.getElementById('debtParcela').value)||0,taxa:parseFloat(document.getElementById('debtTaxa').value)||0,parcelas:parcelasNum,parcelasOriginais:parcelasNum};
     const id=await fbAdd('debts',d);debts.push({...d,id});
     ['debtNome','debtSaldo','debtParcela','debtParc','debtTaxa'].forEach(x=>document.getElementById(x).value='');
     closeModal('modalDebt');renderDebts();showToast('Dívida adicionada!');
@@ -900,6 +962,7 @@ async function addDebt(){
 }
 async function deleteDebt(id){if(!confirm('Remover?'))return;await fbDel('debts',id);debts=debts.filter(d=>d.id!==id);renderDebts();showToast('Removida!');}
 function renderDebts(){
+  const now = new Date();
   const tot=debts.reduce((a,d)=>a+d.saldo,0),par=debts.reduce((a,d)=>a+d.parcela,0);
   const recM=curMonthTx().filter(t=>t.tipo==='Receita').reduce((a,t)=>a+t.valor,0);
   const dti=recM>0?par/recM*100:0;
@@ -913,16 +976,41 @@ function renderDebts(){
   document.getElementById('debt-quit').textContent=qD?MN[qD.getMonth()]+'/'+qD.getFullYear():'—';
   const has=debts.length>0;
   document.getElementById('debtsEmpty').style.display=has?'none':'block';
-  document.getElementById('debtsList').innerHTML=debts.map((d,idx)=>`<div class="debt-card" style="--c:${dColors[idx%dColors.length]}">
-    <div style="display:flex;align-items:start;justify-content:space-between;margin-bottom:8px">
-      <div><div style="font-size:14px;font-weight:600;margin-bottom:3px">${d.nome}</div><div style="font-size:12px;color:var(--text3)">${d.tipo}${d.taxa?' • '+d.taxa+'%/mês':''}${d.parcelas?' • '+d.parcelas+'x restantes':''}</div></div>
-      <div style="text-align:right"><div style="font-size:18px;font-weight:700;color:${dColors[idx%dColors.length]}">${fmtBRL(d.saldo)}</div><div style="font-size:12px;color:var(--text2)">Parcela: ${fmtBRL(d.parcela)}</div></div>
-    </div>
-    <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--text2)">
-      ${d.taxa?`<span>Juros est./mês: ${fmtBRL(d.saldo*d.taxa/100)}</span>`:'<span></span>'}
-      <button onclick="deleteDebt('${d.id}')" style="background:none;border:none;cursor:pointer;color:var(--text3);font-size:14px"><i class="ti ti-trash"></i></button>
-    </div>
-  </div>`).join('');
+  const curMonthKey = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
+  document.getElementById('debtsList').innerHTML=debts.map((d,idx)=>{
+    const color = dColors[idx%dColors.length];
+    const paidThisMonth = transactions.some(t =>
+      t.data && t.data.startsWith(curMonthKey) &&
+      t.tipo === 'Despesa' &&
+      t.debtId === d.id
+    );
+    const progressPct = d.parcelas > 0 && d.parcelasOriginais > 0
+      ? Math.round((1 - d.parcelas/d.parcelasOriginais)*100)
+      : 0;
+    return `<div class="debt-card" style="--c:${color}">
+      <div style="display:flex;align-items:start;justify-content:space-between;margin-bottom:10px">
+        <div>
+          <div style="font-size:14px;font-weight:600;margin-bottom:3px">${d.nome}</div>
+          <div style="font-size:12px;color:var(--text3)">${d.tipo}${d.taxa?' • '+d.taxa+'%/mês':''}${d.parcelas?' • '+d.parcelas+'x restantes':''}</div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-size:20px;font-weight:700;color:${color}">${fmtBRL(d.saldo)}</div>
+          <div style="font-size:12px;color:var(--text2)">Parcela: <strong>${fmtBRL(d.parcela)}</strong></div>
+        </div>
+      </div>
+      ${d.parcelasOriginais>0?`<div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text3);margin-bottom:4px"><span>Progresso de quitação</span><span>${progressPct}%</span></div><div class="progress-bar"><div class="progress-fill" style="width:${progressPct}%;background:${color}"></div></div></div>`:''}
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
+        <div style="font-size:12px;color:var(--text2)">${d.taxa?`Juros est./mês: ${fmtBRL(d.saldo*d.taxa/100)}`:''}</div>
+        <div style="display:flex;gap:8px;align-items:center">
+          ${paidThisMonth
+            ? `<div style="display:flex;align-items:center;gap:6px;background:rgba(74,222,128,.12);border:1px solid rgba(74,222,128,.3);border-radius:8px;padding:6px 12px;font-size:12px;color:var(--green)"><i class="ti ti-circle-check" style="font-size:16px"></i> Pago este mês</div>`
+            : `<button onclick="payDebtInstallment('${d.id}')" style="display:flex;align-items:center;gap:6px;background:var(--accent);border:none;border-radius:8px;padding:7px 14px;font-size:12px;color:#fff;cursor:pointer;font-family:inherit"><i class="ti ti-checkbox" style="font-size:15px"></i> Registrar Pagamento</button>`
+          }
+          <button onclick="deleteDebt('${d.id}')" style="background:none;border:1px solid var(--border2);border-radius:8px;padding:7px 10px;cursor:pointer;color:var(--text3);font-size:14px"><i class="ti ti-trash"></i></button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
 }
 
 // ── KPI ──
@@ -1020,6 +1108,301 @@ function exportData(){
   const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='profitfirst_'+today()+'.json';a.click();
 }
 
+
+// ── FORECAST ──
+function renderForecast(){
+  const months = parseInt(document.getElementById('forecastMonths').value) || 6;
+  document.getElementById('fc-period-label').textContent = months + ' meses';
+
+  const now = new Date();
+  const totalDebt = debts.reduce((a,d) => a + d.saldo, 0);
+  const monthlyDebt = debts.reduce((a,d) => a + d.parcela, 0);
+
+  // Estimate monthly income from last 3 months avg
+  let estIncome = 0;
+  for(let i=1; i<=3; i++){
+    const d = new Date(now.getFullYear(), now.getMonth()-i, 1);
+    const key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+    const txs = transactions.filter(t => t.data && t.data.startsWith(key));
+    estIncome += txs.filter(t=>t.tipo==='Receita').reduce((a,t)=>a+t.valor,0);
+  }
+  // Also use profit first receita if set
+  if(profitReceita > 0) estIncome = profitReceita * 3;
+  estIncome = estIncome > 0 ? estIncome / 3 : 0;
+
+  // Estimate monthly non-debt expenses from last 3 months transactions
+  let estExpenses = 0;
+  const expByMonth = {};
+  const expByCategory = {};
+  for(let i=1; i<=3; i++){
+    const d = new Date(now.getFullYear(), now.getMonth()-i, 1);
+    const key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+    const txs = transactions.filter(t => t.data && t.data.startsWith(key));
+    const monthDesp = txs.filter(t=>t.tipo==='Despesa').reduce((a,t)=>a+t.valor,0);
+    expByMonth[key] = monthDesp;
+    estExpenses += monthDesp;
+    // track by category for breakdown
+    txs.filter(t=>t.tipo==='Despesa').forEach(t=>{
+      expByCategory[t.cat] = (expByCategory[t.cat]||0) + t.valor;
+    });
+  }
+  // Average monthly expenses from transactions
+  const monthsWithData = Object.values(expByMonth).filter(v=>v>0).length || 1;
+  estExpenses = estExpenses / Math.max(monthsWithData, 1);
+  // Normalize category averages
+  Object.keys(expByCategory).forEach(k=>{ expByCategory[k] = expByCategory[k]/monthsWithData; });
+  // Non-debt portion (subtract debt parcelas already counted)
+  const nonDebtExpenses = Math.max(0, estExpenses - monthlyDebt);
+
+  const freeIncome = estIncome - monthlyDebt - nonDebtExpenses;
+
+  // KPI cards
+  document.getElementById('fc-total-debts').textContent = fmtBRL(totalDebt);
+  document.getElementById('fc-total-debts-sub').textContent = debts.length + ' dívida(s) ativa(s)';
+  document.getElementById('fc-monthly-debt').textContent = fmtBRL(monthlyDebt);
+  document.getElementById('fc-free-income').textContent = fmtBRL(freeIncome);
+  document.getElementById('fc-free-income').style.color = freeIncome >= 0 ? 'var(--green)' : 'var(--red)';
+  document.getElementById('fc-free-sub').textContent = estIncome > 0 ? 'De est. ' + fmtBRL(estIncome) + '/mês' : 'Sem receita estimada';
+
+  // Next debt to be paid off
+  const debtsSorted = [...debts].filter(d => d.parcelas > 0).sort((a,b) => a.parcelas - b.parcelas);
+  if(debtsSorted.length > 0){
+    const nxt = debtsSorted[0];
+    const nxtDate = new Date(now.getFullYear(), now.getMonth() + nxt.parcelas, 1);
+    document.getElementById('fc-next-quit').textContent = MN[nxtDate.getMonth()] + '/' + nxtDate.getFullYear();
+    document.getElementById('fc-next-quit-name').textContent = nxt.nome;
+  } else {
+    document.getElementById('fc-next-quit').textContent = '—';
+    document.getElementById('fc-next-quit-name').textContent = debts.length === 0 ? 'Nenhuma dívida!' : 'Sem prazo definido';
+  }
+
+  // Build monthly forecast data
+  const labels = [], recArr = [], debtArr = [], expArr = [], saldoArr = [];
+  let runningDebtTotal = totalDebt;
+
+  for(let m = 0; m < months; m++){
+    const d = new Date(now.getFullYear(), now.getMonth() + m + 1, 1);
+    const label = MN[d.getMonth()] + '/' + d.getFullYear().toString().slice(2);
+    labels.push(label);
+
+    // Calculate remaining parcelas for each debt at this month
+    const debtPayments = debts.reduce((a, debt) => {
+      if(!debt.parcelas || debt.parcelas > m) return a + (debt.parcela || 0);
+      return a;
+    }, 0);
+
+    const saldo = estIncome - debtPayments - nonDebtExpenses;
+    runningDebtTotal = Math.max(0, runningDebtTotal - debtPayments);
+
+    recArr.push(Math.round(estIncome));
+    debtArr.push(Math.round(debtPayments));
+    expArr.push(Math.round(nonDebtExpenses));
+    saldoArr.push(Math.round(saldo));
+  }
+
+  // Chart
+  mkChart('chartForecast', {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [
+        {label:'Receita Est.', data:recArr, backgroundColor:C.green+'99', borderRadius:4},
+        {label:'Parcelas', data:debtArr, backgroundColor:C.red+'99', borderRadius:4},
+        {label:'Outros Gastos', data:expArr, backgroundColor:C.amber+'99', borderRadius:4},
+        {label:'Saldo Previsto', data:saldoArr, type:'line', borderColor:C.acc, backgroundColor:'rgba(108,99,255,.1)', fill:true, tension:.4, borderWidth:2, pointRadius:3, pointBackgroundColor:C.acc, yAxisID:'y'}
+      ]
+    },
+    options:{responsive:true, maintainAspectRatio:false,
+      plugins:{legend:{display:true, labels:{color:'#888', font:{size:11}, boxWidth:12}}},
+      scales:{
+        x:{grid:{color:CGRID}, ticks:{color:'#777', font:{size:11}}},
+        y:{grid:{color:CGRID}, ticks:{color:'#777', font:{size:11}, callback:v=>'R$'+Math.round(v/1000)+'k'}}
+      }
+    }
+  });
+
+  // Monthly table
+  let tableHTML = '';
+  let runDebt = totalDebt;
+  for(let m = 0; m < months; m++){
+    const d = new Date(now.getFullYear(), now.getMonth() + m + 1, 1);
+    const label = MN[d.getMonth()] + ' ' + d.getFullYear();
+    const dp = debts.reduce((a, debt) => {
+      if(!debt.parcelas || debt.parcelas > m) return a + (debt.parcela || 0);
+      return a;
+    }, 0);
+    const totalSaidas = dp + nonDebtExpenses;
+    const saldo = estIncome - totalSaidas;
+    runDebt = Math.max(0, runDebt - dp);
+    const saldoColor = saldo >= 0 ? 'var(--green)' : 'var(--red)';
+    const saldoBg = saldo >= 0 ? 'rgba(74,222,128,.08)' : 'rgba(248,113,113,.08)';
+    tableHTML += `<tr style="background:${saldoBg}">
+      <td style="font-weight:600">${label}</td>
+      <td style="color:var(--green);font-weight:500">${fmtBRL(estIncome)}</td>
+      <td style="color:var(--red)">${dp>0?fmtBRL(dp):'—'}</td>
+      <td style="color:var(--amber)">${nonDebtExpenses>0?fmtBRL(nonDebtExpenses):'—'}</td>
+      <td style="color:var(--text2);font-weight:500">${fmtBRL(totalSaidas)}</td>
+      <td style="color:${saldoColor};font-weight:700">${(saldo>=0?'+':'')+fmtBRL(saldo)}</td>
+      <td style="color:var(--text3)">${runDebt>0?fmtBRL(runDebt):'✅ Quitada'}</td>
+    </tr>`;
+  }
+  document.getElementById('forecastTable').innerHTML = tableHTML;
+
+  // Debt timeline
+  const hasDeb = debts.length > 0;
+  // Category breakdown from transactions
+  const catKeys = Object.keys(expByCategory).sort((a,b) => expByCategory[b]-expByCategory[a]);
+  const clrs = [C.acc,C.amber,C.teal,C.green,C.purple,C.blue,C.orange,C.red];
+  if(catKeys.length > 0){
+    const totalCatExp = Object.values(expByCategory).reduce((a,b)=>a+b,0);
+    document.getElementById('fcCatBreakdown').innerHTML = `
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin-bottom:12px">
+        ${catKeys.map((cat,i)=>{
+          const val = expByCategory[cat];
+          const pct = totalCatExp > 0 ? val/totalCatExp*100 : 0;
+          const projTotal = val * months;
+          return `<div style="background:var(--bg3);border-radius:8px;padding:12px">
+            <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px">
+              <span style="width:8px;height:8px;border-radius:2px;background:${clrs[i%clrs.length]};flex-shrink:0"></span>
+              <span style="font-size:12px;font-weight:500;color:var(--text2)">${cat}</span>
+            </div>
+            <div style="font-size:18px;font-weight:700;color:var(--text)">${fmtBRL(val)}<span style="font-size:11px;color:var(--text3)">/mês</span></div>
+            <div style="font-size:11px;color:var(--text3);margin-top:2px">Projeção ${months}m: ${fmtBRL(projTotal)}</div>
+            <div class="progress-bar" style="margin-top:6px">
+              <div class="progress-fill" style="width:${pct}%;background:${clrs[i%clrs.length]}"></div>
+            </div>
+          </div>`;
+        }).join('')}
+      </div>
+      <div style="padding:10px 12px;background:var(--bg4);border-radius:8px;display:flex;justify-content:space-between;align-items:center">
+        <span style="font-size:12px;color:var(--text2)">Total médio mensal (das transações)</span>
+        <span style="font-size:14px;font-weight:700;color:var(--amber)">${fmtBRL(estExpenses)}/mês</span>
+      </div>`;
+    document.getElementById('fc-cat-source').textContent = 'Baseado em ' + monthsWithData + ' mês(es) de dados';
+  } else {
+    document.getElementById('fcCatBreakdown').innerHTML = '<div class="empty-state"><i class="ti ti-chart-bar"></i><p>Adicione despesas nas Transações para ver o detalhamento por categoria.</p></div>';
+  }
+
+  document.getElementById('debtTimeline').style.display = hasDeb ? 'block' : 'none';
+  document.getElementById('debtTimelineEmpty').style.display = hasDeb ? 'none' : 'block';
+
+  if(hasDeb){
+    const sortedDebts = [...debts].sort((a,b) => (a.parcelas||999) - (b.parcelas||999));
+    const colors = [C.red, C.purple, C.amber, C.orange, C.teal, C.blue];
+    let tlHTML = '';
+    sortedDebts.forEach((d, idx) => {
+      const color = colors[idx % colors.length];
+      const parcelas = d.parcelas || 0;
+      const quitDate = parcelas > 0 ? (() => {
+        const dt = new Date(now.getFullYear(), now.getMonth() + parcelas, 1);
+        return MN[dt.getMonth()] + '/' + dt.getFullYear();
+      })() : 'Sem prazo';
+      const pct = parcelas > 0 ? Math.max(5, Math.min(95, 100 - (parcelas/24*100))) : 50;
+      const jurosTotal = d.taxa > 0 ? Math.round(d.saldo * d.taxa/100 * parcelas) : 0;
+
+      tlHTML += `<div style="margin-bottom:20px;padding:14px;background:var(--bg3);border-radius:10px;border-left:3px solid ${color}">
+        <div style="display:flex;align-items:start;justify-content:space-between;margin-bottom:10px">
+          <div>
+            <div style="font-size:14px;font-weight:600;color:var(--text)">${d.nome}</div>
+            <div style="font-size:12px;color:var(--text3);margin-top:2px">${d.tipo} • ${fmtBRL(d.parcela)}/mês${d.taxa?' • '+d.taxa+'% a.m.':''}</div>
+          </div>
+          <div style="text-align:right">
+            <div style="font-size:16px;font-weight:700;color:${color}">${fmtBRL(d.saldo)}</div>
+            <div style="font-size:11px;color:var(--text3)">Quitação: ${quitDate}</div>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:10px">
+          <div style="text-align:center"><div style="font-size:10px;color:var(--text3);margin-bottom:2px">Parcelas Rest.</div><div style="font-size:14px;font-weight:600">${parcelas}x</div></div>
+          <div style="text-align:center"><div style="font-size:10px;color:var(--text3);margin-bottom:2px">Total a Pagar</div><div style="font-size:14px;font-weight:600">${fmtBRL(d.parcela*parcelas)}</div></div>
+          <div style="text-align:center"><div style="font-size:10px;color:var(--text3);margin-bottom:2px">Juros Est. Total</div><div style="font-size:14px;font-weight:600;color:var(--red)">${jurosTotal>0?fmtBRL(jurosTotal):'—'}</div></div>
+          <div style="text-align:center"><div style="font-size:10px;color:var(--text3);margin-bottom:2px">Custo Real</div><div style="font-size:14px;font-weight:600">${fmtBRL(d.parcela*parcelas + jurosTotal)}</div></div>
+        </div>
+        <div style="font-size:11px;color:var(--text2);margin-bottom:4px;display:flex;justify-content:space-between"><span>Progresso de quitação</span><span style="font-weight:600;color:${color}">${Math.round(pct)}%</span></div>
+        <div class="progress-bar" style="height:8px">
+          <div class="progress-fill" style="width:${pct}%;background:${color}"></div>
+        </div>
+        <div style="display:flex;gap:4px;margin-top:10px;overflow-x:auto;padding-bottom:2px">
+          ${Array.from({length:Math.min(parcelas,24)},(_,i)=>{
+            const dt=new Date(now.getFullYear(),now.getMonth()+i+1,1);
+            return `<div style="flex-shrink:0;text-align:center;width:48px"><div style="font-size:9px;color:var(--text3)">${MN[dt.getMonth()]}</div><div style="width:40px;height:24px;border-radius:4px;background:${color}${i<3?'ff':'44'};margin:2px auto;display:flex;align-items:center;justify-content:center;font-size:9px;color:${i<3?'#000':'var(--text2)'}">R$${Math.round(d.parcela/1000*10)/10}k</div></div>`;
+          }).join('')}
+          ${parcelas>24?`<div style="flex-shrink:0;display:flex;align-items:center;padding:0 8px;font-size:11px;color:var(--text3)">+${parcelas-24}x</div>`:''}
+        </div>
+      </div>`;
+    });
+    document.getElementById('debtTimeline').innerHTML = tlHTML;
+  }
+}
+
+
+// ── PAY DEBT INSTALLMENT ──
+async function payDebtInstallment(debtId){
+  const debt = debts.find(d => d.id === debtId);
+  if(!debt) return;
+
+  const now = new Date();
+  const curMonthKey = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
+
+  // Check if already paid this month
+  const alreadyPaid = transactions.some(t =>
+    t.data && t.data.startsWith(curMonthKey) &&
+    t.tipo === 'Despesa' &&
+    t.debtId === debtId
+  );
+  if(alreadyPaid){ showToast('Parcela já registrada este mês','warn'); return; }
+
+  const confirmMsg = `Registrar pagamento da parcela de ${fmtBRL(debt.parcela)} referente a "${debt.nome}"?\n\nIsso irá:\n• Lançar a despesa nas transações do mês atual\n• Descontar do saldo devedor\n• Reduzir 1 parcela restante`;
+  if(!confirm(confirmMsg)) return;
+
+  setLoading(true);
+  try {
+    // 1. Add transaction
+    const today_str = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
+    const newNovoSaldo = Math.max(0, debt.saldo - debt.parcela);
+    const newParcelas = Math.max(0, (debt.parcelas || 0) - 1);
+
+    const txData = {
+      tipo: 'Despesa',
+      desc: `Parcela — ${debt.nome}`,
+      cat: 'Moradia',
+      conta: 'Conta Principal',
+      data: today_str,
+      valor: debt.parcela,
+      obs: `Pagamento automático. Saldo restante: ${fmtBRL(newNovoSaldo)}`,
+      debtId: debtId
+    };
+    const txId = await fbAdd('transactions', txData);
+    transactions.unshift({...txData, id: txId});
+    transactions.sort((a,b) => (b.data||'').localeCompare(a.data||''));
+
+    // 2. Update debt: discount saldo and reduce parcelas
+    const updateData = { saldo: newNovoSaldo, parcelas: newParcelas };
+
+    if(newParcelas === 0 || newNovoSaldo <= 0){
+      // Debt fully paid!
+      if(confirm(`🎉 Parabéns! A dívida "${debt.nome}" foi totalmente quitada!\nDeseja arquivá-la (remover da lista)?`)){
+        await fbDel('debts', debtId);
+        debts = debts.filter(d => d.id !== debtId);
+        showToast('🎉 Dívida quitada e removida!', 'success');
+      } else {
+        await fbUpd('debts', debtId, {...updateData, saldo: 0, parcelas: 0});
+        debts = debts.map(d => d.id === debtId ? {...d, saldo: 0, parcelas: 0} : d);
+        showToast('Dívida quitada!');
+      }
+    } else {
+      await fbUpd('debts', debtId, updateData);
+      debts = debts.map(d => d.id === debtId ? {...d, ...updateData} : d);
+      showToast(`Parcela de ${fmtBRL(debt.parcela)} registrada! Restam ${newParcelas}x`);
+    }
+
+    renderDebts();
+    renderTransactions();
+    renderDashboard();
+
+  } catch(e){ showToast('Erro: ' + e.message, 'error'); }
+  setLoading(false);
+}
+
 // ── EXPOSE GLOBALS ──
 window.switchTab=switchTab;window.doLogin=doLogin;window.doRegister=doRegister;window.doLogout=doLogout;
 window.goTo=goTo;window.openModal=openModal;window.closeModal=closeModal;window.toggleSidebar=toggleSidebar;
@@ -1028,8 +1411,8 @@ window.saveAndRenderProfit=saveAndRenderProfit;window.saveSettings=saveSettings;
 window.addGoal=addGoal;window.deleteGoal=deleteGoal;window.updateGoalProgress=updateGoalProgress;
 window.addProject=addProject;window.deleteProject=deleteProject;window.updateProject=updateProject;window.updateProjProgress=updateProjProgress;
 window.addInvestment=addInvestment;window.deleteInvestment=deleteInvestment;window.updateInvAtual=updateInvAtual;
-window.addDebt=addDebt;window.deleteDebt=deleteDebt;
-window.calcSim=calcSim;window.calcFI=calcFI;window.exportData=exportData;
+window.addDebt=addDebt;window.deleteDebt=deleteDebt;window.payDebtInstallment=payDebtInstallment;
+window.calcSim=calcSim;window.calcFI=calcFI;window.exportData=exportData;window.renderForecast=renderForecast;
 
 window.addEventListener('resize',()=>{document.getElementById('menuBtn').style.display=window.innerWidth<=700?'flex':'none';});
 if(window.innerWidth<=700)document.getElementById('menuBtn').style.display='flex';
